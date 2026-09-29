@@ -1,0 +1,19 @@
+{
+  "name": "whatsapp-call-api",
+  "version": "1.0.0",
+  "description": "API para chamadas de voz via WhatsApp integrada ao n8n",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "latest",
+    "baileys-caller": "github:SheIITear/baileys-caller",
+    "express": "latest",
+    "qrcode": "latest"
+  }
+}
