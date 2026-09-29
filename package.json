@@ -11,7 +11,7 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "latest",
+    "@whiskeysockets/baileys": "7.0.0-rc.11",
     "baileys-caller": "github:SheIITear/baileys-caller",
     "express": "latest",
     "qrcode": "latest"
