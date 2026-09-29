@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
+    "postinstall": "node scripts/patch-baileys-caller.cjs",
     "start": "node src/index.js"
   },
   "engines": {
