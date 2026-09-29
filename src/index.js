@@ -72,7 +72,7 @@ app.post("/call", async (req, res) => {
     console.log("DEBUG client:", Object.keys(client));
 
     const call = await client.call(phoneNumber, {
-      audioSource: audioSource || "silence",
+      audioSource: audioSource || "./teste.mp3",
       ...(durationMs ? { durationMs: Number(durationMs) } : {})
     });
 
