@@ -68,6 +68,9 @@ app.post("/call", async (req, res) => {
 
     const phoneNumber = String(number).replace(/\D/g, "");
 
+    console.log("DEBUG phoneNumber:", phoneNumber);
+    console.log("DEBUG client:", Object.keys(client));
+
     const call = await client.call(phoneNumber, {
       audioSource: audioSource || "silence",
       ...(durationMs ? { durationMs: Number(durationMs) } : {})
