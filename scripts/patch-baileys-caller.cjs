@@ -69,10 +69,14 @@ const audioOld = `    start = () => {
         if (this.#proc)
             return;`;
 
-const audioNew = `    start = () => {
+const audioNew = `
+    start = () => {
         console.log("[AudioFeeder] START source=", this.source, "rate=", this.sampleRate, "channels=", this.channels, "frames=", this.framesPerChunk);
         if (this.#proc)
-            return;`;
+            return;
+        this._debugDataLogged = false;
+        this._debugLastChunks = 0;
+`;
 
 if (audioSource.includes(audioNew)) {
     console.log("Patch de diagnostico do audio ja aplicado.");
@@ -82,4 +86,23 @@ if (audioSource.includes(audioNew)) {
     console.log("Patch de diagnostico do audio aplicado com sucesso.");
 } else {
     console.error("AVISO: trecho do AudioFeeder nao encontrado.");
+}
+
+// Diagnostico: verificar dados recebidos do FFmpeg
+const audioOld2 = `        this.#proc.stdout.on("data", (chunk) => {`;
+
+const audioNew2 = `        this.#proc.stdout.on("data", (chunk) => {
+            if (!this._debugDataLogged) {
+                console.log("[AudioFeeder] FFmpeg DATA bytes=", chunk.length);
+                this._debugDataLogged = true;
+            }`;
+
+if (audioSource.includes(audioNew2)) {
+    console.log("Patch FFmpeg DATA ja aplicado.");
+} else if (audioSource.includes(audioOld2)) {
+    audioSource = audioSource.replace(audioOld2, audioNew2);
+    fs.writeFileSync(audioFile, audioSource);
+    console.log("Patch FFmpeg DATA aplicado com sucesso.");
+} else {
+    console.error("AVISO: trecho stdout do AudioFeeder nao encontrado.");
 }
