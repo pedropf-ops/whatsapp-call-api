@@ -123,3 +123,23 @@ if (source.includes(sendNew)) {
 } else {
     console.error("AVISO: trecho sendAudioData nao encontrado.");
 }
+
+// Diagnostico: verificar quando o AudioFeeder e interrompido
+const stopOld = `    #handleAudioCaptureStop = () => {
+        this.#feeder?.stop();
+        this.#feeder = null;`;
+
+const stopNew = `    #handleAudioCaptureStop = () => {
+        console.log("[AudioFeeder] STOP");
+        this.#feeder?.stop();
+        this.#feeder = null;`;
+
+if (source.includes(stopNew)) {
+    console.log("Patch STOP ja aplicado.");
+} else if (source.includes(stopOld)) {
+    source = source.replace(stopOld, stopNew);
+    fs.writeFileSync(file, source);
+    console.log("Patch STOP aplicado com sucesso.");
+} else {
+    console.error("AVISO: trecho handleAudioCaptureStop nao encontrado.");
+}
