@@ -59,3 +59,27 @@ source = source.replace(oldCode, newCode);
 fs.writeFileSync(file, source);
 
 console.log("Patch brasileiro do baileys-caller aplicado com sucesso.");
+
+
+// Diagnostico do audio
+const audioFile = "node_modules/baileys-caller/dist/audio-feeder.mjs";
+let audioSource = fs.readFileSync(audioFile, "utf8");
+
+const audioOld = `    start = () => {
+        if (this.#proc)
+            return;`;
+
+const audioNew = `    start = () => {
+        console.log("[AudioFeeder] START source=", this.source, "rate=", this.sampleRate, "channels=", this.channels, "frames=", this.framesPerChunk);
+        if (this.#proc)
+            return;`;
+
+if (audioSource.includes(audioNew)) {
+    console.log("Patch de diagnostico do audio ja aplicado.");
+} else if (audioSource.includes(audioOld)) {
+    audioSource = audioSource.replace(audioOld, audioNew);
+    fs.writeFileSync(audioFile, audioSource);
+    console.log("Patch de diagnostico do audio aplicado com sucesso.");
+} else {
+    console.error("AVISO: trecho do AudioFeeder nao encontrado.");
+}
