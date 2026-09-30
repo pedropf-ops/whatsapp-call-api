@@ -44,21 +44,17 @@ const newCode = `        let targetNumber = phoneNumber.replace(/\\D/g, "");
         if (!peerLid)
             throw new Error(\`Could not resolve LID for \${targetPnJid}\`);`;
 
+
 if (source.includes(newCode)) {
     console.log("Patch do baileys-caller ja aplicado.");
-    process.exit(0);
-}
-
-if (!source.includes(oldCode)) {
+} else if (!source.includes(oldCode)) {
     console.error("ERRO: trecho original do baileys-caller nao encontrado.");
     process.exit(1);
+} else {
+    source = source.replace(oldCode, newCode);
+    fs.writeFileSync(file, source);
+    console.log("Patch brasileiro do baileys-caller aplicado com sucesso.");
 }
-
-source = source.replace(oldCode, newCode);
-
-fs.writeFileSync(file, source);
-
-console.log("Patch brasileiro do baileys-caller aplicado com sucesso.");
 
 
 // Diagnostico do audio
@@ -105,4 +101,25 @@ if (audioSource.includes(audioNew2)) {
     console.log("Patch FFmpeg DATA aplicado com sucesso.");
 } else {
     console.error("AVISO: trecho stdout do AudioFeeder nao encontrado.");
+}
+
+// Diagnostico: verificar envio para o engine
+const sendOld = `                this.#engine.sendAudioData(chunk, this.#capturePtr);`;
+
+const sendNew = `                if (!this._debugSendCount)
+                    this._debugSendCount = 0;
+                this._debugSendCount++;
+                if (this._debugSendCount === 1 || this._debugSendCount % 50 === 0) {
+                    console.log("[AudioFeeder] SEND chunk=", this._debugSendCount);
+                }
+                this.#engine.sendAudioData(chunk, this.#capturePtr);`;
+
+if (source.includes(sendNew)) {
+    console.log("Patch SEND ja aplicado.");
+} else if (source.includes(sendOld)) {
+    source = source.replace(sendOld, sendNew);
+    fs.writeFileSync(file, source);
+    console.log("Patch SEND aplicado com sucesso.");
+} else {
+    console.error("AVISO: trecho sendAudioData nao encontrado.");
 }
