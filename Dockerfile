@@ -11,6 +11,9 @@ COPY scripts ./scripts
 
 RUN npm install --omit=dev
 
+# Corrige o encerramento antecipado do envio de audio
+RUN node -e 'const fs = require("fs"); const p = "node_modules/baileys-caller/dist/audio-feeder.mjs"; const s = fs.readFileSync(p, "utf8"); const old = "if (!this.#proc)\n            return;"; const replacement = "if (!this.#proc && this.#queue.length === 0)\n            return;"; if (s.split(old).length !== 2) { throw new Error("Trecho da biblioteca nao encontrado ou duplicado"); } fs.writeFileSync(p, s.replace(old, replacement)); console.log("Correcao de audio aplicada");'
+
 COPY . .
 
 EXPOSE 3000
